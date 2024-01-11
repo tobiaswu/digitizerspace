@@ -5,27 +5,33 @@ import { PiCheckCircleLight, PiWarningCircleLight } from 'react-icons/pi';
 import { ZodError, z } from 'zod';
 
 const schema = z.object({
-  name: z.string(),
+  name: z.string().min(2),
   email: z.string().email().min(5),
   phone: z.string().optional(),
   text: z.string().min(50),
+  checkbox: z.string().optional().nullable(),
 });
 
 export const ContactForm = () => {
   const [message, setMessage] = useState<string>();
   const [error, setError] = useState<string>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleSubmit = async (formData: FormData) => {
+    setIsLoading(true);
+
     const name = formData.get('name') as string;
     const email = formData.get('email') as string;
     const phone = formData.get('phone') as string;
     const text = formData.get('text') as string;
+    const checkbox = formData.get('checkbox') as string;
 
     const parsed = schema.safeParse({
       name: name,
       email: email,
       phone: phone,
       text: text,
+      checkbox: checkbox,
     });
 
     if (!parsed.success) {
@@ -39,12 +45,13 @@ export const ContactForm = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, email, phone, text }),
+        body: JSON.stringify({ name, email, phone, text, checkbox }),
       })
         .then((res) => res.json())
         .then((data) => setMessage(data.message))
         .catch((err) => setError(err.error));
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -89,8 +96,23 @@ export const ContactForm = () => {
           placeholder="Tell us about your project"
           required
         ></textarea>
+        <label className="cursor-pointer label w-fit gap-4">
+          <span className="label-text">Send me a copy to my email</span>
+          <input
+            type="checkbox"
+            name="checkbox"
+            className="checkbox checkbox-primary"
+          />
+        </label>
         <button className="btn btn-primary" type="submit">
-          Submit
+          {isLoading ? (
+            <>
+              <span className="loading loading-spinner loading-md" />
+              <span>Sending</span>
+            </>
+          ) : (
+            <span>Submit</span>
+          )}
         </button>
       </form>
       {message && (
