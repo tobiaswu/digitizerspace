@@ -5,19 +5,30 @@ import {
   PiLockKeyLight,
   PiTwitterLogoLight,
 } from 'react-icons/pi';
-import { navItems } from './Navbar/Navbar.utils';
 import { EmailSignup } from './EmailSignup';
+import { getNavItems } from './Navbar/Navbar.utils';
+import { Dictionary } from '@/common/types';
+import { LocaleSwitcher } from './LocaleSwitcher';
 
-export const Footer = () => {
+interface FooterProps {
+  dict: Dictionary;
+}
+
+export const Footer = ({ dict }: FooterProps) => {
+  const navItems = getNavItems(dict);
+
   return (
     <footer className="bg-neutral">
       <div className="container mx-auto px-4 py-8 flex flex-col md:flex-row justify-between gap-8">
         <div className="flex flex-col lg:flex-row justify-between gap-8 w-full">
-          <Link className="h-fit" href={RouteId.root}>
-            <p className="text-2xl font-bold bg-gradient-to-r from-slate-100 to-slate-300 text-transparent bg-clip-text">
-              DigitizerSpace
-            </p>
-          </Link>
+          <div className="flex flex-col gap-8">
+            <Link className="h-fit" href={RouteId.root}>
+              <p className="text-2xl font-bold bg-gradient-to-r from-slate-100 to-slate-300 text-transparent bg-clip-text">
+                DigitizerSpace
+              </p>
+            </Link>
+            <LocaleSwitcher />
+          </div>
           {navItems.map((mainItem) => {
             return (
               mainItem.items && (
@@ -47,9 +58,9 @@ export const Footer = () => {
         <div className="divider md:divider-horizontal mx-0" />
         <div className="max-w-sm">
           <p className="text-2xl leading-normal mb-4">
-            Sign up for our free automation & digitization newsletter
+            {dict.footer.emailSignup}
           </p>
-          <EmailSignup />
+          <EmailSignup dict={dict} />
         </div>
       </div>
 
@@ -60,11 +71,11 @@ export const Footer = () => {
               <p className="text-sm">© 2024 TW Software Solutions LLC</p>
               <PiDotOutlineLight className="text-2xl" />
               <Link className="hover:text-primary" href={RouteId.about}>
-                <p className="text-sm">About us</p>
+                <p className="text-sm">{dict.footer.aboutUs}</p>
               </Link>
               <PiDotOutlineLight className="text-2xl" />
               <Link className="hover:text-primary" href={RouteId.privacy}>
-                <p className="text-sm">Privacy</p>
+                <p className="text-sm">{dict.footer.privacy}</p>
               </Link>
               {/* <PiDotOutlineLight />
         <Link className="hover:text-primary" href="/terms">
