@@ -1,4 +1,4 @@
-import { ContactForm } from '@/components/ContactForm';
+import { ContactForm } from '@/components/ContactForm/ContactForm';
 import { ContactOption } from '@/components/ContactOption';
 import {
   PiEnvelopeLight,
@@ -11,9 +11,9 @@ import {
   fadeInAnimationVariant,
   itemAnimationVariant,
   staggerAnimationVariant,
-} from '@/utils/animation';
+} from '@/lib/animation';
 import { getDictionary } from '@/utils/getDictionary';
-import { Locale } from '@/common/i18n';
+import { Locale } from '@/lib/i18n';
 
 export const metadata: Metadata = {
   title: 'Contact DigitizerSpace today - we help you automating',

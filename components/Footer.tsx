@@ -1,21 +1,23 @@
-import { RouteId } from '@/utils/route';
+import { RouteId } from '@/lib/route';
 import Link from 'next/link';
 import {
   PiDotOutlineLight,
   PiLockKeyLight,
   PiTwitterLogoLight,
 } from 'react-icons/pi';
-import { EmailSignup } from './EmailSignup';
+import { EmailSignup } from './EmailSignup/EmailSignup';
 import { getNavItems } from './Navbar/Navbar.utils';
-import { Dictionary } from '@/common/types';
+import { Dictionary } from '@/lib/types';
 import { LocaleSwitcher } from './LocaleSwitcher';
+import { Locale } from '@/lib/i18n';
 
 interface FooterProps {
   dict: Dictionary;
+  lang: Locale;
 }
 
-export const Footer = ({ dict }: FooterProps) => {
-  const navItems = getNavItems(dict);
+export const Footer = ({ dict, lang }: FooterProps) => {
+  const navItems = getNavItems(dict, lang);
 
   return (
     <footer className="bg-neutral">

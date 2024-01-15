@@ -1,19 +1,19 @@
 import { BlogPreview } from '@/components/BlogPreview';
 import { CheckedText } from '@/components/CheckedText';
 import { DiscoverCard } from '@/components/DiscoverCard';
-import { EmailSignup } from '@/components/EmailSignup';
+import { EmailSignup } from '@/components/EmailSignup/EmailSignup';
 import { LottieAnimation } from '@/components/LottieAnimation';
 import { MotionWrapper } from '@/components/MotionWrapper';
 import { PartnerLogo } from '@/components/PartnerLogo';
 import { UseCaseCard } from '@/components/UseCaseCard';
 import { getDictionary } from '@/utils/getDictionary';
-import { Locale } from '@/common/i18n';
+import { Locale } from '@/lib/i18n';
 import {
   fadeInAnimationVariant,
   itemAnimationVariant,
   staggerAnimationVariant,
-} from '@/utils/animation';
-import { RouteId } from '@/utils/route';
+} from '@/lib/animation';
+import { RouteId } from '@/lib/route';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
