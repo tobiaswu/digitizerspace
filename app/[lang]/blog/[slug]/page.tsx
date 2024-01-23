@@ -1,133 +1,144 @@
-import { BlogContentRef } from '@/components/BlogContentRef';
-import { BlogPostAuthor } from '@/components/BlogPostAuthor';
-import { BlogPostSectionTitle } from '@/components/BlogPostSectionTitle';
-import { BlogPreviewSmall } from '@/components/BlogPreviewSmall';
-import { PostShareButton } from '@/components/PostShareButton';
-import Image from 'next/image';
+import { ArticleAuthor } from '@/components/ArticleAuthor';
+import { ArticleShareButton } from '@/components/ArticleShareButton';
+import { ThemeSwitcher } from '@/components/ThemeSwitcher';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { Locale } from '@/lib/i18n';
+import { Article } from '@/lib/types';
+import { ArticleContentRenderer } from '@/components/ArticleContentRenderer';
+import { NotFound } from '@/components/NotFound';
 
-export default function BlogPost({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+export const ARTICLES_API = `${process.env.STRAPI_URL}/api/articles`;
 
-  return (
+export async function generateStaticParams() {
+  const articlesDe: Article[] | undefined = await fetch(
+    ARTICLES_API + '?locale=de',
+    {
+      method: 'GET',
+    }
+  )
+    .then((res) => res.json())
+    .then((data) => data.data)
+    .catch((error) => console.log(error));
+  const articlesEn: Article[] | undefined = await fetch(ARTICLES_API, {
+    method: 'GET',
+  })
+    .then((res) => res.json())
+    .then((data) => data.data)
+    .catch((error) => console.log(error));
+  const slugsDe = articlesDe?.map((article) => ({
+    slug: article.attributes.slug,
+  }));
+  const slugsEn = articlesEn?.map((article) => ({
+    slug: article.attributes.slug,
+  }));
+
+  if (slugsDe && slugsEn) {
+    return slugsEn.concat(slugsDe);
+  } else if (slugsDe) {
+    return slugsDe;
+  } else if (slugsEn) {
+    return slugsEn;
+  }
+  return [];
+}
+
+export default async function Article({
+  params: { slug, lang },
+}: {
+  params: { slug: string; lang: Locale };
+}) {
+  const article: Article | undefined = await fetch(
+    ARTICLES_API +
+      '?locale=' +
+      lang +
+      '&filters[slug][$eq]=' +
+      slug +
+      '&populate=*',
+    {
+      method: 'GET',
+    }
+  )
+    .then((res) => res.json())
+    .then((data) => data.data[0])
+    .catch((error) => console.log(error));
+
+  return article ? (
     <>
       <div className="relative">
         <div className="bg-neutral p-8">
           <div className="container mx-auto">
-            <div className="flex items-center justify-between">
-              <div className="badge badge-secondary badge-lg rounded-lg mb-2">
-                Trends
-              </div>
-              {/* TODO: add share modal */}
-              <PostShareButton />
+            <div className="flex items-center justify-between gap-2">
+              <Breadcrumbs />
+              <ThemeSwitcher />
             </div>
-            <h1 className="text-5xl font-bold mb-4 leading-tight">
-              The Paperless Office
+            <h1 className="text-5xl font-bold my-4 leading-tight">
+              {article.attributes.title}
             </h1>
             <p className="max-w-xl leading-relaxed">
-              Summary about paperless, all you need to know to implement it
-              successfully into your business operations. Learn how Chris F.
-              digitalized his real estate business.
+              {article.attributes.description}
             </p>
-            <div className="flex gap-8 mt-8 items-center">
-              <p className="text-base self-end">Oct 19, 2023</p>
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 mt-8 items-start sm:items-center">
+              <p className="text-base">
+                {article.attributes.updatedAt &&
+                  'Updated at: ' +
+                    new Date(
+                      article?.attributes.updatedAt
+                    ).toLocaleDateString()}
+              </p>
               <div className="badge badge-primary badge-md rounded-lg">
-                5 mins read
+                {article.attributes.reading_time ?? 0} mins read
               </div>
+              <ArticleShareButton />
             </div>
           </div>
         </div>
 
-        <Image
-          className="container mx-auto md:absolute top-64 md:right-8 lg:right-16 xl:right-32 2xl:right-64 px-4 w-auto max-w-sm pt-8"
-          src="https://docs.paperless-ngx.com/assets/logo_full_white.svg"
-          alt="White logo of paperless-ngx"
-          width={384}
-          height={184}
-          loading="lazy"
-        />
+        {/* TODO: add hero image */}
+        {/* <ArticleHeroImage
+          imageLightUrl={article.attributes.heroImageLight.data.attributes.url}
+          imageLightAlt={article.attributes.heroImageLight.data.attributes.alternativeText}
+          imageDarkUrl={article.attributes.heroImageDark.data.attributes.url}
+          imageDarkAlt={article.attributes.heroImageDark.data.attributes.alternativeText}
+        /> */}
 
-        <div className="mx-auto max-w-4xl py-16 px-4">
-          <h2 className="text-2xl font-semibold mb-4">Table of contents</h2>
-          <ol className="list-decimal list-inside">
-            <li>
-              <BlogContentRef
-                hash="section-1"
-                title="What is paperless office?"
-              />
-            </li>
-            <li>
-              <BlogContentRef hash="section-2" title="What are the benefits?" />
-            </li>
-            <li>
-              <BlogContentRef hash="section-3" title="Final thoughts" />
-            </li>
-          </ol>
+        <div className="container mx-auto py-8 px-4">
+          <ArticleAuthor
+            name={article.attributes.author.data.attributes.name}
+            avatarUrl={
+              article.attributes.author.data.attributes.avatar?.url ?? '/'
+            }
+            avatarAltText={
+              article.attributes.author.data.attributes.avatar
+                ?.alternativeText ?? ''
+            }
+            twitterUrl={article.attributes.author.data.attributes.twitterUrl}
+            linkedinUrl={article.attributes.author.data.attributes.linkedinUrl}
+          />
         </div>
       </div>
 
-      <div className="mx-auto max-w-4xl px-4">
-        <section id="section-1" className="pb-16">
-          <BlogPostSectionTitle
-            title="What is a paperless office?"
-            hash="section-1"
-          />
-          <p className="mt-6 leading-relaxed">
-            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-            nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
-            erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
-            et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est
-            Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur
-            sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore
-            et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
-            accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren,
-            no sea takimata sanctus est Lorem ipsum dolor sit amet.
-          </p>
-        </section>
-        <section id="section-2" className="pb-16">
-          <BlogPostSectionTitle
-            title="What are the benefits?"
-            hash="section-2"
-          />
-          <p className="mt-6 leading-relaxed">
-            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-            nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
-            erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
-            et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est
-            Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur
-            sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore
-            et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
-            accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren,
-            no sea takimata sanctus est Lorem ipsum dolor sit amet.
-          </p>
-          <div className="flex flex-col py-4">
-            <Image
-              src="/assets/images/ai-hagrid-robots.webp"
-              alt="Placeholder image"
-              width={600}
-              height={200}
-              className="rounded-lg"
-            />
-            <p className="text-sm text-neutral-400">Picture of ...</p>
-          </div>
-        </section>
+      <div className="container flex flex-col md:flex-row mx-auto gap-8 px-4">
+        {/* TODO: add table of content */}
+        {/* <TableOfContents hashes={} titles={} /> */}
+
+        <div className="max-w-4xl">
+          <ArticleContentRenderer content={article.attributes.content} />
+        </div>
       </div>
 
-      <div className="flex gap-8 items-center justify-between mx-auto max-w-4xl px-4">
-        <BlogPostAuthor
-          name="Tobias Wupperfeld"
-          avatarUrl="/assets/images/founder-portrait.webp"
-          twitterUrl="/"
-          linkedinUrl="/"
-        />
-        {/* TODO: add post rating functionality */}
-        {/* <BlogPostRating /> */}
-      </div>
+      {/* TODO: add Article rating functionality */}
+      {/* <div className="flex gap-8 items-center justify-between mx-auto max-w-4xl px-4"> */}
+      {/* <ArticleRating /> */}
+      {/* </div> */}
 
       {/* TODO: add comment section */}
 
-      <div className="container mx-auto py-32 px-4">
-        <BlogPreviewSmall />
-      </div>
+      {/* TODO: add related Articles */}
+      {/* <div className="container mx-auto py-32 px-4">
+        <RelatedArticles />
+      </div> */}
     </>
+  ) : (
+    <NotFound text="Could not find article" />
   );
 }

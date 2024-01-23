@@ -11,10 +11,7 @@ import Link from 'next/link';
 import { RouteId } from '@/lib/route';
 import type { Metadata } from 'next';
 import { MotionWrapper } from '@/components/MotionWrapper';
-import {
-  itemAnimationVariant,
-  staggerAnimationVariant,
-} from '@/lib/animation';
+import { itemAnimationVariant, staggerAnimationVariant } from '@/lib/animation';
 import { Locale } from '@/lib/i18n';
 import { getDictionary } from '@/utils/getDictionary';
 
@@ -94,7 +91,10 @@ export default async function About({
         <p>
           {dict.about.secondSectionText}
           &nbsp;
-          <Link className="underline hover:text-primary" href={RouteId.root}>
+          <Link
+            className="underline hover:text-primary"
+            href={`/${lang}${RouteId.root}`}
+          >
             DigitizerSpace.com
           </Link>
           .&nbsp;
@@ -107,11 +107,11 @@ export default async function About({
         <div className="flex flex-col sm:flex-row gap-4 items-center my-8">
           <div className="flex flex-col items-center gap-2">
             <Image
-              className="rounded-full border border-gunmetal-600"
+              className="rounded-full border border-gunmetal-600 w-48 h-auto"
               src="/assets/images/founder-portrait.webp"
               alt="Portrait of our founder Tobias Wupperfeld"
-              width={200}
-              height={200}
+              width={192}
+              height={0}
               loading="lazy"
             />
             <div className="flex gap-2">
@@ -158,19 +158,22 @@ export default async function About({
           &nbsp;
           <Link
             className="underline hover:text-primary"
-            href={RouteId.resources}
+            href={`/${lang}${RouteId.resources}`}
           >
             {dict.about.resourcesLinkText}
           </Link>
           ,&nbsp;
           <Link
             className="underline hover:text-primary"
-            href={RouteId.solutions}
+            href={`/${lang}${RouteId.solutions}`}
           >
             {dict.about.solutionsLinkText}
           </Link>
           &nbsp;{dict.conditional.or}&nbsp;
-          <Link className="underline hover:text-primary" href={RouteId.contact}>
+          <Link
+            className="underline hover:text-primary"
+            href={`/${lang}${RouteId.contact}`}
+          >
             {dict.about.contactUsLinkText}
           </Link>
           &nbsp;

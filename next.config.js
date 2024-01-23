@@ -8,6 +8,12 @@ const nextConfig = {
         port: '',
         pathname: '/assets/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'strapi.digitizerspace.com',
+        port: '',
+        pathname: '/uploads/**',
+      },
     ],
   },
 };
