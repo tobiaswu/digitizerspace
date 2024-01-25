@@ -4,6 +4,7 @@ import { BlocksContent, BlocksRenderer } from '@strapi/blocks-react-renderer';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArticleSectionTitle } from './ArticleSectionTitle';
+import { PiCopySimpleLight } from 'react-icons/pi';
 
 export interface ArticleContentRendererProps {
   content: BlocksContent;
@@ -16,7 +17,7 @@ export const ArticleContentRenderer = ({
     <BlocksRenderer
       content={content}
       blocks={{
-        paragraph: ({ children }) => <p className="pb-8">{children}</p>,
+        paragraph: ({ children }) => <p className="pb-4">{children}</p>,
         link: ({ children, url }) => (
           <Link
             className="underline hover:text-primary"
@@ -31,7 +32,7 @@ export const ArticleContentRenderer = ({
           switch (level) {
             case 1:
               return (
-                <h1 className="text-5xl font-semibold pb-4 leading-tight">
+                <h1 className="text-5xl font-semibold pb-6 pt-12 leading-tight">
                   {children}
                 </h1>
               );
@@ -39,25 +40,25 @@ export const ArticleContentRenderer = ({
               return <ArticleSectionTitle title={children} hash={children} />;
             case 3:
               return (
-                <h3 className="text-3xl font-semibold pb-4 leading-tight">
+                <h3 className="text-2xl font-semibold pb-6 pt-12 leading-tight">
                   {children}
                 </h3>
               );
             case 4:
               return (
-                <h4 className="text-2xl font-semibold pb-4 leading-tight">
+                <h4 className="text-xl font-semibold pb-6 pt-12 leading-tight">
                   {children}
                 </h4>
               );
             case 5:
               return (
-                <h5 className="text-xl font-semibold pb-4 leading-tight">
+                <h5 className="text-lg font-semibold pb-6 pt-12 leading-tight">
                   {children}
                 </h5>
               );
             case 6:
               return (
-                <h6 className="text-lg font-semibold pb-4 leading-tight">
+                <h6 className="text-base font-semibold pb-6 pt-12 leading-tight">
                   {children}
                 </h6>
               );
@@ -66,8 +67,9 @@ export const ArticleContentRenderer = ({
           }
         },
         image: ({ image }) => (
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 mb-4">
             <Image
+              className="rounded-lg border border-gunmetal-600 w-auto"
               src={image.url}
               alt={image.alternativeText ?? ''}
               width={image.width}
@@ -77,10 +79,42 @@ export const ArticleContentRenderer = ({
             <p className="text-sm">{image.caption}</p>
           </div>
         ),
+        code: ({ children }) => (
+          <code className="block p-4 mb-4 rounded-lg bg-neutral border border-gunmetal-600 whitespace-pre overflow-x-scroll relative">
+            <button
+              className="absolute btn btn-ghost right-1 top-1"
+              onClick={() => navigator.clipboard.writeText(children as string)} // TODO: fix
+            >
+              <PiCopySimpleLight className="text-2xl" />
+            </button>
+            {children}
+          </code>
+        ),
+        list: ({ children, format }) => {
+          if (format === 'ordered') {
+            return (
+              <ol className="list-decimal mb-4 ml-4 text-lg leading-relaxed">
+                {/* <li className="list-item"> */}
+                {children}
+                {/* </li> */}
+              </ol>
+            );
+          }
+          return (
+            <ul className="list-disc mb-4 ml-4 text-lg leading-relaxed">
+              {/* <li className="list-item"> */}
+              {children}
+              {/* </li> */}
+            </ul>
+          );
+        },
       }}
       modifiers={{
         bold: ({ children }) => <strong>{children}</strong>,
         italic: ({ children }) => <span className="italic">{children}</span>,
+        code: ({ children }) => (
+          <code className="p-2 rounded-lg bg-neutral">{children}</code>
+        ),
       }}
     />
   );
