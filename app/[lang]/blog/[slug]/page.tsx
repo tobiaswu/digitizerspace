@@ -6,6 +6,7 @@ import { Locale } from '@/lib/i18n';
 import { Article } from '@/lib/types';
 import { ArticleContentRenderer } from '@/components/ArticleContentRenderer';
 import { NotFound } from '@/components/NotFound';
+import { getDictionary } from '@/utils/getDictionary';
 
 export const ARTICLES_API = `${process.env.STRAPI_URL}/api/articles`;
 
@@ -47,13 +48,15 @@ export default async function Article({
 }: {
   params: { slug: string; lang: Locale };
 }) {
+  const dict = await getDictionary(lang);
+
   const article: Article | undefined = await fetch(
     ARTICLES_API +
       '?locale=' +
       lang +
       '&filters[slug][$eq]=' +
       slug +
-      '&populate=*',
+      '&populate[0]=author&populate[1]=author.avatar&populate[2]=category&populate[3]=tags',
     {
       method: 'GET',
     }
@@ -68,7 +71,7 @@ export default async function Article({
         <div className="bg-neutral p-8">
           <div className="container mx-auto">
             <div className="flex items-center justify-between gap-2">
-              <Breadcrumbs />
+              <Breadcrumbs dict={dict} />
               <ThemeSwitcher />
             </div>
             <h1 className="text-5xl font-bold my-4 leading-tight">
@@ -80,15 +83,16 @@ export default async function Article({
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 mt-8 items-start sm:items-center">
               <p className="text-base">
                 {article.attributes.updatedAt &&
-                  'Updated at: ' +
+                  dict.blog.info.updated +
                     new Date(
                       article?.attributes.updatedAt
                     ).toLocaleDateString()}
               </p>
               <div className="badge badge-primary badge-md rounded-lg">
-                {article.attributes.reading_time ?? 0} mins read
+                {article.attributes.reading_time ?? 0}
+                {dict.blog.info.readTime}
               </div>
-              <ArticleShareButton />
+              <ArticleShareButton dict={dict} />
             </div>
           </div>
         </div>
@@ -103,16 +107,17 @@ export default async function Article({
 
         <div className="container mx-auto py-8 px-4">
           <ArticleAuthor
-            name={article.attributes.author.data.attributes.name}
+            name={article.attributes.author?.data.attributes.name ?? ''}
             avatarUrl={
-              article.attributes.author.data.attributes.avatar?.url ?? '/'
+              article.attributes.author?.data.attributes.avatar?.data.attributes
+                .url ?? '/'
             }
             avatarAltText={
-              article.attributes.author.data.attributes.avatar
-                ?.alternativeText ?? ''
+              article.attributes.author?.data.attributes.avatar?.data.attributes
+                .alternativeText ?? ''
             }
-            twitterUrl={article.attributes.author.data.attributes.twitterUrl}
-            linkedinUrl={article.attributes.author.data.attributes.linkedinUrl}
+            twitterUrl={article.attributes.author?.data.attributes.twitterUrl}
+            linkedinUrl={article.attributes.author?.data.attributes.linkedinUrl}
           />
         </div>
       </div>
@@ -139,6 +144,6 @@ export default async function Article({
       </div> */}
     </div>
   ) : (
-    <NotFound text="Could not find article" />
+    <NotFound text={dict.blog.info.notFound} />
   );
 }
