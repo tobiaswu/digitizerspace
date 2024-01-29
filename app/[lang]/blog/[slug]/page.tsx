@@ -8,8 +8,40 @@ import { ArticleContentRenderer } from '@/components/ArticleContentRenderer';
 import { NotFound } from '@/components/NotFound';
 import { getDictionary } from '@/utils/getDictionary';
 import { MotionProgressbar } from '@/components/MotionProgressbar';
+import { Metadata } from 'next';
+import { getFormattedDate } from '@/utils/date';
+
+type Props = {
+  params: { slug: string; lang: Locale };
+};
 
 export const ARTICLES_API = `${process.env.STRAPI_URL}/api/articles`;
+const URL = process.env.STRAPI_URL ?? '';
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const article: Article | undefined = await fetch(
+    ARTICLES_API +
+      '?locale=' +
+      params.lang +
+      '&filters[slug][$eq]=' +
+      params.slug +
+      '&populate[0]=thumbnail',
+    {
+      method: 'GET',
+    }
+  )
+    .then((res) => res.json())
+    .then((data) => data.data[0])
+    .catch((error) => console.log(error));
+
+  return {
+    title: article?.attributes.title,
+    description: article?.attributes.description,
+    openGraph: {
+      images: URL + article?.attributes.thumbnail?.data.attributes.url,
+    },
+  };
+}
 
 export async function generateStaticParams() {
   const articlesDe: Article[] | undefined = await fetch(
@@ -44,20 +76,16 @@ export async function generateStaticParams() {
   return [];
 }
 
-export default async function Article({
-  params: { slug, lang },
-}: {
-  params: { slug: string; lang: Locale };
-}) {
-  const dict = await getDictionary(lang);
+export default async function Article({ params }: Props) {
+  const dict = await getDictionary(params.lang);
 
   const article: Article | undefined = await fetch(
     ARTICLES_API +
       '?locale=' +
-      lang +
+      params.lang +
       '&filters[slug][$eq]=' +
-      slug +
-      '&populate[0]=author&populate[1]=author.avatar&populate[2]=category&populate[3]=tags',
+      params.slug +
+      '&populate[0]=author&populate[1]=author.avatar&populate[2]=category&populate[3]=tags&populate[4]=thumbnail',
     {
       method: 'GET',
     }
@@ -69,59 +97,54 @@ export default async function Article({
   return article ? (
     <div>
       <MotionProgressbar />
-      <div className="relative">
-        <div className="bg-neutral p-8">
-          <div className="container mx-auto">
-            <div className="flex items-center justify-between gap-2">
-              <Breadcrumbs dict={dict} />
-              <ThemeSwitcher />
-            </div>
-            <h1 className="text-5xl font-bold my-4 leading-tight">
-              {article.attributes.title}
-            </h1>
-            <p className="max-w-xl leading-relaxed">
-              {article.attributes.description}
+      <div
+        className="bg-neutral p-8"
+        // style={{
+        //   backgroundImage: `url(${
+        //     URL + article.attributes.thumbnail.data.attributes.url
+        //   })`,
+        // }}
+      >
+        <div className="container mx-auto">
+          <div className="flex items-center justify-between gap-2">
+            <Breadcrumbs dict={dict} />
+            <ThemeSwitcher />
+          </div>
+          <h1 className="text-5xl font-bold my-4 leading-tight">
+            {article.attributes.title}
+          </h1>
+          <p className="max-w-xl leading-relaxed">
+            {article.attributes.description}
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 mt-8 items-start sm:items-center">
+            <p className="text-base">
+              {article.attributes.updatedAt &&
+                dict.blog.info.updated +
+                  getFormattedDate(article.attributes.updatedAt, params.lang)}
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 mt-8 items-start sm:items-center">
-              <p className="text-base">
-                {article.attributes.updatedAt &&
-                  dict.blog.info.updated +
-                    new Date(
-                      article?.attributes.updatedAt
-                    ).toLocaleDateString()}
-              </p>
-              <div className="badge badge-primary badge-md rounded-lg">
-                {article.attributes.reading_time ?? 0}
-                {dict.blog.info.readTime}
-              </div>
-              <ArticleShareButton dict={dict} />
+            <div className="badge badge-primary badge-md rounded-lg">
+              {article.attributes.reading_time ?? 0}
+              {dict.blog.info.readTime}
             </div>
+            <ArticleShareButton dict={dict} />
           </div>
         </div>
+      </div>
 
-        {/* TODO: add hero image */}
-        {/* <ArticleHeroImage
-          imageLightUrl={article.attributes.heroImageLight.data.attributes.url}
-          imageLightAlt={article.attributes.heroImageLight.data.attributes.alternativeText}
-          imageDarkUrl={article.attributes.heroImageDark.data.attributes.url}
-          imageDarkAlt={article.attributes.heroImageDark.data.attributes.alternativeText}
-        /> */}
-
-        <div className="container mx-auto py-8 px-4">
-          <ArticleAuthor
-            name={article.attributes.author?.data.attributes.name ?? ''}
-            avatarUrl={
-              article.attributes.author?.data.attributes.avatar?.data.attributes
-                .url ?? '/'
-            }
-            avatarAltText={
-              article.attributes.author?.data.attributes.avatar?.data.attributes
-                .alternativeText ?? ''
-            }
-            twitterUrl={article.attributes.author?.data.attributes.twitterUrl}
-            linkedinUrl={article.attributes.author?.data.attributes.linkedinUrl}
-          />
-        </div>
+      <div className="container mx-auto py-8 px-4">
+        <ArticleAuthor
+          name={article.attributes.author?.data.attributes.name ?? ''}
+          avatarUrl={
+            article.attributes.author?.data.attributes.avatar?.data.attributes
+              .url ?? '/'
+          }
+          avatarAltText={
+            article.attributes.author?.data.attributes.avatar?.data.attributes
+              .alternativeText ?? ''
+          }
+          twitterUrl={article.attributes.author?.data.attributes.twitterUrl}
+          linkedinUrl={article.attributes.author?.data.attributes.linkedinUrl}
+        />
       </div>
 
       <div className="container flex flex-col md:flex-row mx-auto gap-8 px-4">
