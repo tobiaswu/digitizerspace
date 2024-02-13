@@ -2,16 +2,15 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Dictionary } from '@/lib/types';
 
 export interface TableOfContentsProps {
-  dict: Dictionary;
   sectionTitles: string[];
+  title: string;
 }
 
 export const TableOfContents = ({
-  dict,
   sectionTitles,
+  title,
 }: TableOfContentsProps) => {
   const [activeTitle, setActiveTitle] = useState('');
 
@@ -46,7 +45,7 @@ export const TableOfContents = ({
 
   return (
     <div className="sticky top-12">
-      <h2 className="text-xl font-semibold mb-2">{dict.blog.toc.title}</h2>
+      <h2 className="text-xl font-semibold mb-2">{title}</h2>
       <ul className="list-none list-inside">
         {sectionTitles.map((title) => {
           const id = title.toLowerCase().replace(/\s/g, '-');

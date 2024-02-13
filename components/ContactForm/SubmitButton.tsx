@@ -1,21 +1,25 @@
-import { Dictionary } from '@/lib/types';
 import { useFormStatus } from 'react-dom';
 
-export interface SubmitButtonProps {
-  dict: Dictionary;
+interface SubmitButtonProps {
+  loadingText: string;
+  submitBtnText: string;
 }
 
-export const SubmitButton = ({ dict }: SubmitButtonProps) => {
+export const SubmitButton = ({
+  loadingText,
+  submitBtnText,
+}: SubmitButtonProps) => {
   const { pending } = useFormStatus();
+
   return (
     <button className="btn btn-primary" type="submit" disabled={pending}>
       {pending ? (
         <>
           <span className="loading loading-spinner loading-md" />
-          <span>{dict.state.sending}</span>
+          <span>{loadingText}</span>
         </>
       ) : (
-        <span>{dict.button.submit}</span>
+        <span>{submitBtnText}</span>
       )}
     </button>
   );
