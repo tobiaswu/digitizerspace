@@ -2,7 +2,12 @@ import { ArticleCard } from '@/components/ArticleCard';
 import { Article } from '@/lib/types';
 import { ARTICLES_API } from './[slug]/page';
 import { NotFound } from '@/components/NotFound';
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import {
+  getFormatter,
+  getTranslations,
+  unstable_setRequestLocale,
+} from 'next-intl/server';
+import { Category } from '@/lib/enums';
 
 type Props = {
   params: { locale: string };
@@ -11,6 +16,7 @@ type Props = {
 export default async function Blog({ params }: Props) {
   unstable_setRequestLocale(params.locale);
   const t = await getTranslations({ locale: params.locale });
+  const format = await getFormatter();
 
   const articles: Article[] | undefined = await fetch(
     ARTICLES_API +
@@ -28,17 +34,28 @@ export default async function Blog({ params }: Props) {
   return articles ? (
     <div className="container mx-auto py-16 px-4 grid grid-cols-6 gap-8">
       {articles.map((article, index) => {
+        const dateTime = new Date(article.attributes.publishedAt);
+        const formattedDate = format.dateTime(dateTime, {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        });
+
         if (index === 0) {
           return (
             <ArticleCard
               key={article.id}
               className="col-span-6 lg:card-side min-h-[300px]"
               preview
-              category={article.attributes.category?.data.attributes.item}
+              category={t(
+                `blog.category.${
+                  article.attributes.category?.data.attributes.item as Category
+                }`
+              )}
               description={article.attributes.description}
               slug={article.attributes.slug}
               title={article.attributes.title}
-              publishedAt={article.attributes.publishedAt}
+              formattedDate={formattedDate}
               publishedAtText={t('blog.info.published')}
               readTime={article.attributes.reading_time}
               readTimeText={t('blog.info.readTime')}
@@ -53,10 +70,14 @@ export default async function Blog({ params }: Props) {
           <ArticleCard
             key={article.id}
             className="col-span-6 sm:col-span-3 lg:col-span-2"
-            category={article.attributes.category?.data.attributes.item}
+            category={t(
+              `blog.category.${
+                article.attributes.category?.data.attributes.item as Category
+              }`
+            )}
             slug={article.attributes.slug}
             title={article.attributes.title}
-            publishedAt={article.attributes.publishedAt}
+            formattedDate={formattedDate}
             publishedAtText={t('blog.info.published')}
             readTime={article.attributes.reading_time}
             readTimeText={t('blog.info.readTime')}
