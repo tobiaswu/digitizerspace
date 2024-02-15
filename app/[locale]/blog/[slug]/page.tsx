@@ -50,39 +50,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export async function generateStaticParams() {
-  const articlesDe: Article[] | undefined = await fetch(
-    ARTICLES_API + '?locale=de',
-    {
-      method: 'GET',
-    }
-  )
-    .then((res) => res.json())
-    .then((data) => data.data)
-    .catch((error) => console.log(error));
-  const articlesEn: Article[] | undefined = await fetch(ARTICLES_API, {
-    method: 'GET',
-  })
-    .then((res) => res.json())
-    .then((data) => data.data)
-    .catch((error) => console.log(error));
-  const slugsDe = articlesDe?.map((article) => ({
-    slug: article.attributes.slug,
-  }));
-  const slugsEn = articlesEn?.map((article) => ({
-    slug: article.attributes.slug,
-  }));
-
-  if (slugsDe && slugsEn) {
-    return slugsEn.concat(slugsDe);
-  } else if (slugsDe) {
-    return slugsDe;
-  } else if (slugsEn) {
-    return slugsEn;
-  }
-  return [];
-}
-
 export default async function Article({ params }: Props) {
   unstable_setRequestLocale(params.locale);
   const t = await getTranslations({ locale: params.locale });
@@ -175,12 +142,13 @@ export default async function Article({ params }: Props) {
 
           <div className="lg:w-2/3">
             <Image
+              className="w-full h-auto"
               src={
                 STRAPI_URL + article.attributes.thumbnail.data.attributes.url
               }
               alt={article.attributes.thumbnail.data.attributes.alternativeText}
               width={1024}
-              height={768}
+              height={0}
               loading="lazy"
             />
           </div>
