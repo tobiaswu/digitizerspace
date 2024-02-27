@@ -35,7 +35,7 @@
       "thirdText": "Implementiere Lösungen, die dein Unternehmen wachsen lassen werden."
     },
     "aboutSection": {
-      "title": "Wir entwickeln und veröffentlichen Qualitäts-Automatisierungslösungen",
+      "title": "Wir entwickeln und veröffentlichen Qualitäts-Automatisierungs-Lösungen",
       "subtitle": "Falls du Unterstützung bei der Automatisierung benötigst, schau dir unsere maßgeschneiderten Dienstleistungen an",
       "firstText": "Vorgefertigte Automatisierungslösungen, die an deine Geschäftsanforderungen angepasst werden können.",
       "secondText": "Softwareprodukte und -tools, die dir helfen können, deine Geschäftsprozesse zu automatisieren.",
@@ -46,7 +46,7 @@
       "description": "Wie unsere Kunden ihr Geschäft mit uns transformiert haben. Von Prozessoptimierungen über Effizienzsteigerungen, Kostenersparnissen und Umsatzsteigerungen."
     },
     "newsletterSection": {
-      "title": "Erhalte als Erstes unsere branchenspezifischen Trends",
+      "title": "Erhalte als Erstes unsere branchen-spezifischen Trends",
       "description": "Unser Ziel ist es, dich dabei zu unterstützen, die neuesten Automatisierungstechnologien und künstliche Intelligenz zu nutzen, um dein Unternehmen mit Rückenwind zu führen.",
       "firstText": "Du verpasst keine Neuigkeiten, Trends und Sonderangebote mehr.",
       "secondText": "Du erhältst unsere neuesten Erkenntnisse und Updates."
@@ -308,16 +308,40 @@
   "localeSwitcher": {
     "locale": "{locale}"
   },
+  "paperlessIntroCard": {
+    "button": "Papierlose Lösung ansehen",
+    "description": "Verliere keine Zeit mehr mit der Verwaltung von Dokumenten. Automatisiere deinen Dokumenten-Management-Arbeitsablauf. Vereinfache die Zusammenarbeit mit Teammitgliedern. Scanne direkt in dein Archiv. Profitiere von intelligenter Suche. Vollständige Backups und nach höchsten Datenschutz-Standards.",
+    "title": "Das Papierlose Büro: Lösung zur Verwaltung deiner Dokumente in einem intelligent durchsuchbaren Archiv",
+    "thumbnailAlt": "Paperless-ngx dashboard mit getaggten Dokumenten."
+  },
+  "blogIntroCard": {
+    "button": "Blog besuchen",
+    "description": "Anleitungen, Werkzeuge, Arbeitsabläufe und mehr, um dir zu helfen, die Effizienz bei deinen täglichen Geschäftsaufgaben zu steigern.",
+    "title": "Der DigitizerSpace Blog",
+    "thumbnailAlt": "DigitizerSpace Blog Logo"
+  },
+  "newsletterIntroCard": {
+    "button": "Abonnieren",
+    "description": "Kostenloser Forschungs-Newsletter: Erhalte branchenspezifische Trends, Nachrichten und Sonderangebote. Verpasse nie die neuesten Erkenntnisse und Updates.",
+    "title": "Der DigitizerSpace Insider",
+    "thumbnailAlt": "DigitizerSpace Insider Logo"
+  },
   "metadata": {
     "root": {
       "title": "DigitizerSpace - KI Automatisierung und Digitalisierung",
       "description": "▷ Skaliere und digitalisiere dein Unternehmen mit DigitizerSpace. Intelligente Automatisierungen. ✓ Basierend auf realen Anwendungsfällen. ✓ Lerne und setze um."
     },
     "solutions": {
+      "title": "DigitizerSpace Lösungen - Innovative Automatisierungen fürs Büro",
+      "description": "Entdecke unsere Bürolösungen, von der intelligenten Dokumentenverwaltung bis hin zu kollaborativen Tools, die deinen Arbeitsalltag revolutionieren. ✓ Erfahre mehr hier",
       "paperless": {
         "title": "Nutze das Paperless-ngx System | wir installieren es für dich",
         "description": "▷ Eliminiere Stift & Papier und mache deine Dokumente verfügbar für dein Team. Starte noch heute mit Paperless-ngx! ✓ 100% Zufriedenheitsgarantie. ✓ Kundensupport."
       }
+    },
+    "resources": {
+      "title": "DigitizerSpace Ressourcen - Tools für Workflow Automatisierung",
+      "description": "Entdecke unsere umfangreichen Ressourcen ✓ Blog ✓ Newsletter ✓ AI Tools, um deine Unternehmensabläufe zu boosten ✓ Klicke hier, um direkt mit dem Lernen loszulegen"
     },
     "privacy": {
       "title": "Datenschutzerklärung von DigitizerSpace - wir schützen deine Daten",

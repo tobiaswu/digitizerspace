@@ -9,6 +9,7 @@ export const getNavItems = async () => {
     {
       id: 'solutions',
       label: t('navbar.solutions'),
+      url: RouteId.solutions,
       items: [
         // {
         //   id: 'solution-1',
@@ -25,6 +26,7 @@ export const getNavItems = async () => {
     {
       id: 'resources',
       label: t('navbar.resources'),
+      url: RouteId.resources,
       items: [
         {
           id: 'resource-1',
@@ -34,7 +36,7 @@ export const getNavItems = async () => {
         {
           id: 'resource-2',
           label: 'Newsletter',
-          url: '/#newsletter',
+          url: 'https://digitizerspace.beehiiv.com/subscribe',
         },
       ],
     },

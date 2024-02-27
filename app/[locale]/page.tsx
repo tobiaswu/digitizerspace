@@ -93,7 +93,7 @@ export default async function Home({ params }: Props) {
           </div>
           <MotionWrapper
             variants={itemAnimationVariant}
-            className="flex flex-col sm:flex-row items-center justify-center pt-8 gap-8 sm:gap-16"
+            className="flex flex-col sm:flex-row items-center justify-center pt-8 gap-8"
           >
             <div className="flex flex-col">
               <p className="text-sm text-left">{t('root.partnerTitle')}</p>
@@ -112,10 +112,6 @@ export default async function Home({ params }: Props) {
               <PartnerLogo
                 src="/assets/logos/CF_logo.webp"
                 alt="Chris Feith Photography Logo"
-              />
-              <PartnerLogo
-                src="/assets/logos/IMS_logo.webp"
-                alt="Immoselfmade Logo"
               />
               <PartnerLogo
                 src="/assets/logos/WV_logo.webp"
