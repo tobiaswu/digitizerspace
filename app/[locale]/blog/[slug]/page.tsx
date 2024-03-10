@@ -131,7 +131,7 @@ export default async function Article({ params }: Props) {
             <p className="max-w-xl leading-relaxed">
               {article.attributes.description}
             </p>
-            <div className="flex flex-wrap gap-4 sm:gap-8 mt-8">
+            <div className="flex flex-wrap items-center gap-4 sm:gap-8 mt-8">
               <p className="text-base">
                 {t('blog.info.published') + formattedPublishedDate}
               </p>
@@ -205,13 +205,6 @@ export default async function Article({ params }: Props) {
           </div>
         </div>
 
-        {/* TODO: add Article rating functionality */}
-        {/* <div className="flex gap-8 items-center justify-between mx-auto max-w-4xl px-4"> */}
-        {/* <ArticleRating /> */}
-        {/* </div> */}
-
-        {/* TODO: add comment section */}
-
         <div className="container mx-auto py-12 sm:py-32 px-4">
           <NextIntlClientProvider
             messages={pick(
@@ -224,6 +217,14 @@ export default async function Article({ params }: Props) {
             <RelatedArticles articles={sortedAndLimitedArticles} />
           </NextIntlClientProvider>
         </div>
+
+        {/* TODO: add Article rating functionality */}
+        {/* <div className="flex gap-8 items-center justify-between mx-auto max-w-4xl px-4"> */}
+        {/* <ArticleRating /> */}
+        {/* </div> */}
+
+        {/* <CommentSection /> */}
+
         <ScrollToTopButton />
       </div>
     );
