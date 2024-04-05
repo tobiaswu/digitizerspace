@@ -2,7 +2,7 @@ import { ArticleAuthor } from '@/components/ArticleAuthor';
 import { ArticleShare } from '@/components/ArticleShare';
 import { ThemeSwitcher } from '@/components/ThemeSwitcher';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
-import { Article } from '@/lib/types';
+import { Article, Comment } from '@/lib/types';
 import { NotFound } from '@/components/NotFound';
 import { MotionProgressbar } from '@/components/MotionProgressbar';
 import { Metadata } from 'next';
@@ -22,6 +22,8 @@ import { RelatedArticles } from '@/components/RelatedArticles/RelatedArticles';
 import { sortAndLimitArticles } from '@/utils/sort';
 import { NextIntlClientProvider } from 'next-intl';
 import { pick } from 'lodash';
+import { CommentSection } from '@/components/CommentSection/CommentSection';
+import { getComments } from '@/components/CommentSection/actions';
 
 type Props = {
   params: { slug: string; locale: string };
@@ -110,6 +112,8 @@ export default async function Article({ params }: Props) {
       day: 'numeric',
     });
 
+    const comments: Comment[] = await getComments(article.id);
+
     return (
       <div>
         <MotionProgressbar />
@@ -196,7 +200,7 @@ export default async function Article({ params }: Props) {
           </div>
         </div>
 
-        <div className="container mx-auto py-12 sm:py-32 px-4">
+        <div className="container mx-auto py-12 sm:py-16 px-4">
           <NextIntlClientProvider
             messages={pick(
               messages,
@@ -214,7 +218,9 @@ export default async function Article({ params }: Props) {
         {/* <ArticleRating /> */}
         {/* </div> */}
 
-        {/* <CommentSection /> */}
+        <div className="container mx-auto py-12 sm:py-16 px-4">
+          <CommentSection articleId={article.id} data={comments} />
+        </div>
 
         <ScrollToTopButton />
       </div>
